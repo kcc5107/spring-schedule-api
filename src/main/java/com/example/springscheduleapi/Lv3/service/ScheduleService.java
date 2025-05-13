@@ -1,7 +1,8 @@
-package com.example.springscheduleapi.service;
+package com.example.springscheduleapi.Lv3.service;
 
-import com.example.springscheduleapi.dto.ScheduleRequestDto;
-import com.example.springscheduleapi.dto.ScheduleResponseDto;
+import com.example.springscheduleapi.Lv3.dto.PasswordCheckRequestDto;
+import com.example.springscheduleapi.Lv3.dto.ScheduleRequestDto;
+import com.example.springscheduleapi.Lv3.dto.ScheduleResponseDto;
 
 import java.util.List;
 
@@ -14,5 +15,5 @@ public interface ScheduleService {
 
     void updateSchedule(Long id, ScheduleRequestDto requestDto);
 
-    void deleteSchedule(Long id);
+    void deleteSchedule(Long id, PasswordCheckRequestDto checkRequestDto);
 }

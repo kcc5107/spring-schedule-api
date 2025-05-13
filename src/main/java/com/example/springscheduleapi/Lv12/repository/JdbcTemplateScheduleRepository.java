@@ -1,8 +1,9 @@
-package com.example.springscheduleapi.repository;
+package com.example.springscheduleapi.Lv12.repository;
 
-import com.example.springscheduleapi.dto.ScheduleRequestDto;
-import com.example.springscheduleapi.dto.ScheduleResponseDto;
-import com.example.springscheduleapi.entity.Schedule;
+import com.example.springscheduleapi.Lv12.dto.PasswordCheckRequestDto;
+import com.example.springscheduleapi.Lv12.dto.ScheduleRequestDto;
+import com.example.springscheduleapi.Lv12.dto.ScheduleResponseDto;
+import com.example.springscheduleapi.Lv12.entity.Schedule;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -84,8 +85,8 @@ public class JdbcTemplateScheduleRepository implements ScheduleRepository {
     }
 
     @Override
-    public int deleteSchedule(Long id) {
-        return jdbcTemplate.update("delete from schedule where id = ?", id);
+    public int deleteSchedule(Long id, PasswordCheckRequestDto checkRequestDto) {
+        return jdbcTemplate.update("delete from schedule where id = ? and password = ?", id, checkRequestDto.getPassword());
     }
 
     private RowMapper<ScheduleResponseDto> scheduleRowMapper() {

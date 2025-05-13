@@ -1,8 +1,9 @@
-package com.example.springscheduleapi.controller;
+package com.example.springscheduleapi.Lv3.controller;
 
-import com.example.springscheduleapi.dto.ScheduleRequestDto;
-import com.example.springscheduleapi.dto.ScheduleResponseDto;
-import com.example.springscheduleapi.service.ScheduleService;
+import com.example.springscheduleapi.Lv3.dto.PasswordCheckRequestDto;
+import com.example.springscheduleapi.Lv3.dto.ScheduleRequestDto;
+import com.example.springscheduleapi.Lv3.dto.ScheduleResponseDto;
+import com.example.springscheduleapi.Lv3.service.ScheduleService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -43,8 +44,8 @@ public class ScheduleController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteSchedule(@PathVariable Long id) {
-        scheduleService.deleteSchedule(id);
+    public ResponseEntity<Void> deleteSchedule(@PathVariable Long id, @Valid @RequestBody PasswordCheckRequestDto checkRequestDto) {
+        scheduleService.deleteSchedule(id, checkRequestDto);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }

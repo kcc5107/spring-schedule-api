@@ -1,11 +1,11 @@
-package com.example.springscheduleapi.service;
+package com.example.springscheduleapi.Lv3.service;
 
-import com.example.springscheduleapi.dto.ScheduleRequestDto;
-import com.example.springscheduleapi.dto.ScheduleResponseDto;
-import com.example.springscheduleapi.entity.Schedule;
-import com.example.springscheduleapi.repository.ScheduleRepository;
+import com.example.springscheduleapi.Lv3.dto.PasswordCheckRequestDto;
+import com.example.springscheduleapi.Lv3.dto.ScheduleRequestDto;
+import com.example.springscheduleapi.Lv3.dto.ScheduleResponseDto;
+import com.example.springscheduleapi.Lv3.entity.Schedule;
+import com.example.springscheduleapi.Lv3.repository.ScheduleRepository;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -57,8 +57,8 @@ public class ScheduleServiceImpl implements ScheduleService {
     }
 
     @Override
-    public void deleteSchedule(Long id) {
-        int deletedRow = scheduleRepository.deleteSchedule(id);
+    public void deleteSchedule(Long id, PasswordCheckRequestDto checkRequestDto) {
+        int deletedRow = scheduleRepository.deleteSchedule(id, checkRequestDto);
         if (deletedRow == 0) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No data has been deleted.");
         }
