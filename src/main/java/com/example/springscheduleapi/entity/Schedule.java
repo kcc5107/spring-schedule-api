@@ -1,6 +1,7 @@
 package com.example.springscheduleapi.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -8,6 +9,7 @@ import java.time.LocalDateTime;
 
 @Getter
 @RequiredArgsConstructor
+@AllArgsConstructor
 public class Schedule {
     private Long id;
     private final String toDo;

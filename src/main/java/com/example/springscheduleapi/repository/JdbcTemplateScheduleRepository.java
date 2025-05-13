@@ -3,11 +3,13 @@ package com.example.springscheduleapi.repository;
 import com.example.springscheduleapi.dto.ScheduleResponseDto;
 import com.example.springscheduleapi.entity.Schedule;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
+import org.springframework.web.server.ResponseStatusException;
 
 import javax.sql.DataSource;
 import java.sql.ResultSet;
@@ -68,6 +70,12 @@ public class JdbcTemplateScheduleRepository implements ScheduleRepository {
         return jdbcTemplate.query(query + sortDesc, scheduleRowMapper());
     }
 
+    @Override
+    public Schedule findScheduleById(Long id) {
+        List<Schedule> queryResult = jdbcTemplate.query("select * from schedule where id = ?", scheduleRowMapperV2(), id);
+        return queryResult.stream().findAny().orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+    }
+
     private RowMapper<ScheduleResponseDto> scheduleRowMapper() {
         return new RowMapper<ScheduleResponseDto>() {
             @Override
@@ -76,6 +84,22 @@ public class JdbcTemplateScheduleRepository implements ScheduleRepository {
                         rs.getLong("id"),
                         rs.getString("toDo"),
                         rs.getString("userName"),
+                        (LocalDateTime) rs.getObject("createdAt"),
+                        (LocalDateTime) rs.getObject("updatedAt")
+                );
+            }
+        };
+    }
+
+    private RowMapper<Schedule> scheduleRowMapperV2() {
+        return new RowMapper<Schedule>() {
+            @Override
+            public Schedule mapRow(ResultSet rs, int rowNum) throws SQLException {
+                return new Schedule(
+                        rs.getLong("id"),
+                        rs.getString("toDo"),
+                        rs.getString("userName"),
+                        rs.getString("password"),
                         (LocalDateTime) rs.getObject("createdAt"),
                         (LocalDateTime) rs.getObject("updatedAt")
                 );

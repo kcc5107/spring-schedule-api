@@ -11,4 +11,6 @@ public interface ScheduleRepository {
     ScheduleResponseDto createSchedule(Schedule schedule);
 
     List<ScheduleResponseDto> findSchedulesByFilter(String userName, LocalDateTime startDate, LocalDateTime endDate);
+
+    Schedule findScheduleById(Long id);
 }

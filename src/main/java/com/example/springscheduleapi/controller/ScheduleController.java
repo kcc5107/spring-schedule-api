@@ -24,7 +24,14 @@ public class ScheduleController {
     }
 
     @GetMapping
-    public List<ScheduleResponseDto> findSchedulesByFilter(@RequestParam(required = false) String userName, @RequestParam(required = false) String updatedAt) {
-        return scheduleService.findSchedulesByFilter(userName, updatedAt);
+    public ResponseEntity<List<ScheduleResponseDto>> findSchedulesByFilter(@RequestParam(required = false) String userName,
+                                                                           @RequestParam(required = false) String updatedAt)
+    {
+        return new ResponseEntity<>(scheduleService.findSchedulesByFilter(userName, updatedAt), HttpStatus.OK);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ScheduleResponseDto> findScheduleById(@PathVariable Long id) {
+        return new ResponseEntity<>(scheduleService.findScheduleById(id), HttpStatus.OK);
     }
 }
