@@ -4,8 +4,10 @@ import com.example.springscheduleapi.dto.ScheduleRequestDto;
 import com.example.springscheduleapi.dto.ScheduleResponseDto;
 import com.example.springscheduleapi.entity.Schedule;
 import com.example.springscheduleapi.repository.ScheduleRepository;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -44,5 +46,13 @@ public class ScheduleServiceImpl implements ScheduleService {
     public ScheduleResponseDto findScheduleById(Long id) {
         Schedule schedule = scheduleRepository.findScheduleById(id);
         return new ScheduleResponseDto(schedule.getId(), schedule.getToDo(), schedule.getUserName(), schedule.getCreatedAt(), schedule.getUpdatedAt());
+    }
+
+    @Override
+    public void updateSchedule(Long id, ScheduleRequestDto requestDto) {
+        int updatedRow = scheduleRepository.updateSchedule(id, requestDto);
+        if (updatedRow == 0) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No data has been modified.");
+        }
     }
 }

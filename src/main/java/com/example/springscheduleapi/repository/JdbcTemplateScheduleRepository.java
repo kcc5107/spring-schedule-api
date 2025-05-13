@@ -1,5 +1,6 @@
 package com.example.springscheduleapi.repository;
 
+import com.example.springscheduleapi.dto.ScheduleRequestDto;
 import com.example.springscheduleapi.dto.ScheduleResponseDto;
 import com.example.springscheduleapi.entity.Schedule;
 import lombok.extern.log4j.Log4j2;
@@ -50,9 +51,9 @@ public class JdbcTemplateScheduleRepository implements ScheduleRepository {
     public List<ScheduleResponseDto> findSchedulesByFilter(String userName, LocalDateTime startDate, LocalDateTime endDate) {
         String query = "select * from schedule";
         String sortDesc = " order by updatedAt desc";
-        log.info(userName);
-        log.info(startDate);
-        log.info(endDate);
+//        log.info(userName);
+//        log.info(startDate);
+//        log.info(endDate);
 
         if (userName != null && startDate != null) {
             return jdbcTemplate.query(query + " where userName = ? and updatedAt >= ? and updatedAt < ?" + sortDesc,
@@ -74,6 +75,13 @@ public class JdbcTemplateScheduleRepository implements ScheduleRepository {
     public Schedule findScheduleById(Long id) {
         List<Schedule> queryResult = jdbcTemplate.query("select * from schedule where id = ?", scheduleRowMapperV2(), id);
         return queryResult.stream().findAny().orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+    }
+
+    @Override
+    public int updateSchedule(Long id, ScheduleRequestDto requestDto) {
+//        String format = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        return jdbcTemplate.update("update schedule set toDo = ?, userName = ?, updatedAt = ? where id = ? and password = ?",
+                requestDto.getToDo(), requestDto.getUserName(), LocalDateTime.now(), id, requestDto.getPassword());
     }
 
     private RowMapper<ScheduleResponseDto> scheduleRowMapper() {

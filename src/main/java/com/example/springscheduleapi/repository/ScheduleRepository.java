@@ -1,5 +1,6 @@
 package com.example.springscheduleapi.repository;
 
+import com.example.springscheduleapi.dto.ScheduleRequestDto;
 import com.example.springscheduleapi.dto.ScheduleResponseDto;
 import com.example.springscheduleapi.entity.Schedule;
 
@@ -13,4 +14,6 @@ public interface ScheduleRepository {
     List<ScheduleResponseDto> findSchedulesByFilter(String userName, LocalDateTime startDate, LocalDateTime endDate);
 
     Schedule findScheduleById(Long id);
+
+    int updateSchedule(Long id, ScheduleRequestDto requestDto);
 }
