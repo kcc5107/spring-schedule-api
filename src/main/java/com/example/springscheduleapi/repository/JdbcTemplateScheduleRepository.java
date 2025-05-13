@@ -79,9 +79,13 @@ public class JdbcTemplateScheduleRepository implements ScheduleRepository {
 
     @Override
     public int updateSchedule(Long id, ScheduleRequestDto requestDto) {
-//        String format = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
         return jdbcTemplate.update("update schedule set toDo = ?, userName = ?, updatedAt = ? where id = ? and password = ?",
                 requestDto.getToDo(), requestDto.getUserName(), LocalDateTime.now(), id, requestDto.getPassword());
+    }
+
+    @Override
+    public int deleteSchedule(Long id) {
+        return jdbcTemplate.update("delete from schedule where id = ?", id);
     }
 
     private RowMapper<ScheduleResponseDto> scheduleRowMapper() {

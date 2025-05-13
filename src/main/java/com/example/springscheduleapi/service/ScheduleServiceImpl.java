@@ -55,4 +55,12 @@ public class ScheduleServiceImpl implements ScheduleService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No data has been modified.");
         }
     }
+
+    @Override
+    public void deleteSchedule(Long id) {
+        int deletedRow = scheduleRepository.deleteSchedule(id);
+        if (deletedRow == 0) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No data has been deleted.");
+        }
+    }
 }
