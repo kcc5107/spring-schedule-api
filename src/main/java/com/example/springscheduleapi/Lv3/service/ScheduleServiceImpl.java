@@ -23,13 +23,13 @@ public class ScheduleServiceImpl implements ScheduleService {
     }
 
     @Override
-    public ScheduleResponseDto createSchedule(ScheduleRequestDto requestDto) {
-        Schedule schedule = new Schedule(requestDto.getToDo(), requestDto.getUserName(), requestDto.getPassword());
+    public ScheduleResponseDto createSchedule(Long authorId, ScheduleRequestDto requestDto) {
+        Schedule schedule = new Schedule(requestDto.getToDo(), authorId, requestDto.getPassword());
         return scheduleRepository.createSchedule(schedule);
     }
 
     @Override
-    public List<ScheduleResponseDto> findSchedulesByFilter(String userName, String updatedAt) {
+    public List<ScheduleResponseDto> findSchedulesByFilter(Long authorId, String updatedAt) {
         LocalDateTime startDate = null;
         LocalDateTime endDate = null;
 
@@ -39,13 +39,13 @@ public class ScheduleServiceImpl implements ScheduleService {
             endDate = localDate.plusDays(1).atStartOfDay();
         }
 
-        return scheduleRepository.findSchedulesByFilter(userName, startDate, endDate);
+        return scheduleRepository.findSchedulesByFilter(authorId, startDate, endDate);
     }
 
     @Override
     public ScheduleResponseDto findScheduleById(Long id) {
         Schedule schedule = scheduleRepository.findScheduleById(id);
-        return new ScheduleResponseDto(schedule.getId(), schedule.getToDo(), schedule.getUserName(), schedule.getCreatedAt(), schedule.getUpdatedAt());
+        return new ScheduleResponseDto(schedule.getId(), schedule.getToDo(), schedule.getAuthorId(), schedule.getCreatedAt(), schedule.getUpdatedAt());
     }
 
     @Override
@@ -62,5 +62,10 @@ public class ScheduleServiceImpl implements ScheduleService {
         if (deletedRow == 0) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No data has been deleted.");
         }
+    }
+
+    @Override
+    public List<ScheduleResponseDto> findSchedulesByAuthorId(Long id) {
+        return scheduleRepository.findSchedulesByAuthorId(id);
     }
 }

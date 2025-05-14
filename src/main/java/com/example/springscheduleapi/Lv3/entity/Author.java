@@ -8,13 +8,12 @@ import lombok.RequiredArgsConstructor;
 import java.time.LocalDateTime;
 
 @Getter
-@RequiredArgsConstructor
 @AllArgsConstructor
-public class Schedule {
+@RequiredArgsConstructor
+public class Author {
     private Long id;
-    private final String toDo;
-    private final Long authorId;
-    private final String password;
+    private final String name;
+    private final String email;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createdAt;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")

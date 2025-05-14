@@ -3,10 +3,11 @@ package com.example.springscheduleapi.Lv3.dto;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 
+
 @Getter
-public class ScheduleRequestDto {
+public class AuthorRequestDto {
     @NotBlank
-    private String toDo;
+    private String name;
     @NotBlank
-    private String password;
+    private String email;
 }

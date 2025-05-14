@@ -17,6 +17,7 @@ import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,60 +34,66 @@ public class JdbcTemplateScheduleRepository implements ScheduleRepository {
     @Override
     public ScheduleResponseDto createSchedule(Schedule schedule) {
         SimpleJdbcInsert jdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
-        jdbcInsert.withTableName("schedule").usingGeneratedKeyColumns("id");
+        jdbcInsert.withTableName("schedule2").usingGeneratedKeyColumns("id");
         LocalDateTime now = LocalDateTime.now();
 
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("toDo", schedule.getToDo());
-        parameters.put("userName", schedule.getUserName());
+        parameters.put("authorId", schedule.getAuthorId());
         parameters.put("password", schedule.getPassword());
         parameters.put("createdAt", now);
         parameters.put("updatedAt", now);
 
         Number key = jdbcInsert.executeAndReturnKey(new MapSqlParameterSource(parameters));
 
-        return new ScheduleResponseDto(key.longValue(), schedule.getToDo(), schedule.getUserName(), now, now);
+        return new ScheduleResponseDto(key.longValue(), schedule.getToDo(), schedule.getAuthorId(), now, now);
     }
 
     @Override
-    public List<ScheduleResponseDto> findSchedulesByFilter(String userName, LocalDateTime startDate, LocalDateTime endDate) {
-        String query = "select * from schedule";
+    public List<ScheduleResponseDto> findSchedulesByFilter(Long authorId, LocalDateTime startDate, LocalDateTime endDate) {
+        StringBuilder query = new StringBuilder();
+        query.append("select * from schedule2 where 1=1");
+        ArrayList<Object> params = new ArrayList<>();
         String sortDesc = " order by updatedAt desc";
-//        log.info(userName);
+//        log.info(authorId);
 //        log.info(startDate);
 //        log.info(endDate);
 
-        if (userName != null && startDate != null) {
-            return jdbcTemplate.query(query + " where userName = ? and updatedAt >= ? and updatedAt < ?" + sortDesc,
-                    scheduleRowMapper(), userName, startDate, endDate);
-        }
-
-        if (userName != null) {
-            return jdbcTemplate.query(query + " where userName = ?" + sortDesc, scheduleRowMapper(), userName);
+        if (authorId != null) {
+            query.append(" and authorId = ?");
+            params.add(authorId);
         }
 
         if (startDate != null) {
-            return jdbcTemplate.query(query + " where updatedAt >= ? and updatedAt < ?" + sortDesc, scheduleRowMapper(), startDate, endDate);
+            query.append(" and updatedAt >= ? and updatedAt < ?");
+            params.add(startDate);
+            params.add(endDate);
         }
 
-        return jdbcTemplate.query(query + sortDesc, scheduleRowMapper());
+        query.append(sortDesc);
+        return jdbcTemplate.query(query.toString(), scheduleRowMapper(), params.toArray());
     }
 
     @Override
     public Schedule findScheduleById(Long id) {
-        List<Schedule> queryResult = jdbcTemplate.query("select * from schedule where id = ?", scheduleRowMapperV2(), id);
+        List<Schedule> queryResult = jdbcTemplate.query("select * from schedule2 where id = ?", scheduleRowMapperV2(), id);
         return queryResult.stream().findAny().orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
     @Override
     public int updateSchedule(Long id, ScheduleRequestDto requestDto) {
-        return jdbcTemplate.update("update schedule set toDo = ?, userName = ?, updatedAt = ? where id = ? and password = ?",
-                requestDto.getToDo(), requestDto.getUserName(), LocalDateTime.now(), id, requestDto.getPassword());
+        return jdbcTemplate.update("update schedule2 set toDo = ?, updatedAt = ? where id = ? and password = ?",
+                requestDto.getToDo(), LocalDateTime.now(), id, requestDto.getPassword());
     }
 
     @Override
     public int deleteSchedule(Long id, PasswordCheckRequestDto checkRequestDto) {
-        return jdbcTemplate.update("delete from schedule where id = ? and password = ?", id, checkRequestDto.getPassword());
+        return jdbcTemplate.update("delete from schedule2 where id = ? and password = ?", id, checkRequestDto.getPassword());
+    }
+
+    @Override
+    public List<ScheduleResponseDto> findSchedulesByAuthorId(Long id) {
+        return jdbcTemplate.query("select * from schedule2 where authorId = ? order by updatedAt desc", scheduleRowMapper(), id);
     }
 
     private RowMapper<ScheduleResponseDto> scheduleRowMapper() {
@@ -96,7 +103,7 @@ public class JdbcTemplateScheduleRepository implements ScheduleRepository {
                 return new ScheduleResponseDto(
                         rs.getLong("id"),
                         rs.getString("toDo"),
-                        rs.getString("userName"),
+                        rs.getLong("authorId"),
                         (LocalDateTime) rs.getObject("createdAt"),
                         (LocalDateTime) rs.getObject("updatedAt")
                 );
@@ -111,7 +118,7 @@ public class JdbcTemplateScheduleRepository implements ScheduleRepository {
                 return new Schedule(
                         rs.getLong("id"),
                         rs.getString("toDo"),
-                        rs.getString("userName"),
+                        rs.getLong("authorId"),
                         rs.getString("password"),
                         (LocalDateTime) rs.getObject("createdAt"),
                         (LocalDateTime) rs.getObject("updatedAt")

@@ -12,11 +12,13 @@ public interface ScheduleRepository {
 
     ScheduleResponseDto createSchedule(Schedule schedule);
 
-    List<ScheduleResponseDto> findSchedulesByFilter(String userName, LocalDateTime startDate, LocalDateTime endDate);
+    List<ScheduleResponseDto> findSchedulesByFilter(Long authorId, LocalDateTime startDate, LocalDateTime endDate);
 
     Schedule findScheduleById(Long id);
 
     int updateSchedule(Long id, ScheduleRequestDto requestDto);
 
     int deleteSchedule(Long id, PasswordCheckRequestDto checkRequestDto);
+
+    List<ScheduleResponseDto> findSchedulesByAuthorId(Long id);
 }

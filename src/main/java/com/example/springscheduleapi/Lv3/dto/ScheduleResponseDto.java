@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 public class ScheduleResponseDto {
     private Long id;
     private String toDo;
-    private String userName;
+    private Long authorId;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createdAt;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")

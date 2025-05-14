@@ -20,16 +20,15 @@ public class ScheduleController {
         this.scheduleService = scheduleService;
     }
 
-    @PostMapping
-    public ResponseEntity<ScheduleResponseDto> createSchedule(@Valid @RequestBody ScheduleRequestDto requestDto) {
-        return new ResponseEntity<>(scheduleService.createSchedule(requestDto), HttpStatus.CREATED);
-    }
+//    @PostMapping
+//    public ResponseEntity<ScheduleResponseDto> createSchedule(@Valid @RequestBody ScheduleRequestDto requestDto) {
+//        return new ResponseEntity<>(scheduleService.createSchedule(requestDto), HttpStatus.CREATED);
+//    }
 
     @GetMapping
-    public ResponseEntity<List<ScheduleResponseDto>> findSchedulesByFilter(@RequestParam(required = false) String userName,
-                                                                           @RequestParam(required = false) String updatedAt)
-    {
-        return new ResponseEntity<>(scheduleService.findSchedulesByFilter(userName, updatedAt), HttpStatus.OK);
+    public ResponseEntity<List<ScheduleResponseDto>> findSchedulesByFilter(@RequestParam(required = false) Long authorId,
+                                                                           @RequestParam(required = false) String updatedAt) {
+        return new ResponseEntity<>(scheduleService.findSchedulesByFilter(authorId, updatedAt), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
